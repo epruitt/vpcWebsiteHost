@@ -32,3 +32,13 @@ output "Omnifood_website_bucket_domain_name" {
   value = aws_s3_bucket.omnifood_website.bucket_domain_name
   description = "The domain name of the S3 bucket for Omnifood website assets"
 }
+
+output "ec2_role_arn" {
+  value = aws_iam_role.ec2_role.arn
+  description = "The ARN of the IAM role for EC2 instances"
+}
+
+output "ec2_instance_profile_arn" {
+  value = aws_iam_instance_profile.ec2_instance_profile.arn
+  description = "The ARN of the IAM instance profile for EC2 instances"
+}

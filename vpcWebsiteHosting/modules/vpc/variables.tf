@@ -26,3 +26,13 @@ variable "subnet_newbits" {
   type = number
   default = 8
 }
+
+variable "ec2_role_name" {
+  description = "Name of the IAM role for EC2 instances"
+  type = string
+}
+
+variable "bucket_arn" {
+  description = "ARN of the S3 bucket to grant read-only access to"
+  type        = string
+}

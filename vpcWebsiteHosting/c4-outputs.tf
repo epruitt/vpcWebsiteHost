@@ -32,3 +32,13 @@ output "Omnifood_website_bucket_domain_name" {
   value = module.vpc.Omnifood_website_bucket_domain_name
   description = "The domain name of the S3 bucket for Omnifood website assets"
 }
+
+output "ec2_role_arn" {
+  value = module.vpc.ec2_role_arn
+  description = "The ARN of the IAM role for EC2 instances"
+}
+
+output "ec2_instance_profile_arn" {
+  value = module.vpc.ec2_instance_profile_arn
+  description = "The ARN of the IAM instance profile for EC2 instances"
+}
