@@ -43,3 +43,8 @@ variable "bucket_arn" {
   description = "ARN of the S3 bucket to grant read-only access to"
   type        = string
 }
+
+variable "alb_security_group_id" {
+  description = "Security group ID for the Application Load Balancer"
+  type        = string
+}

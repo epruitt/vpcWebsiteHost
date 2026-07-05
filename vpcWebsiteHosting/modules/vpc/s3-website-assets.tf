@@ -1,6 +1,6 @@
 # create s3  website asset bucket
-resource "aws_s3" "omnifood_website"{
-   bucket = "Omnifood-website-assets"
+resource "aws_s3_bucket" "omnifood_website"{
+   bucket = "omnifood-website-assets"
 
    tags={
     Name = "Omnifood website"
