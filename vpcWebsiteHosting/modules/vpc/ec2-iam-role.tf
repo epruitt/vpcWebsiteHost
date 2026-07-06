@@ -20,22 +20,24 @@ resource "aws_iam_role_policy_attachment" "ec2_ssm_policy" {
 }
 
 #Least Privilage policy for S3 access
-resource "aws_iam_role_policy" "s3_access"{
+resource "aws_iam_role_policy" "s3_access" {
     name = "${var.ec2_role_name}-s3-access"
     role = aws_iam_role.ec2_role.id
 
-    policy = jsonecode({
-        version = "2012-10-17"
-        statement = [
+    policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
             {
-                sid = "ListBucket"
-                effect = "Allow"
-                resource = "[${var.bucket_arn}]"
+                Sid    = "ListBucket"
+                Effect = "Allow"
+                Action = ["s3:ListBucket"]
+                Resource = [var.bucket_arn]
             },
             {
-                sid = "GetObjects"
-                effect = "Allow"
-                resource = "[${var.bucket_arn}/*]"
+                Sid    = "GetObjects"
+                Effect = "Allow"
+                Action = ["s3:GetObject"]
+                Resource = ["${var.bucket_arn}/*"]
             }
         ]
     })
