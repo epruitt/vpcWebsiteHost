@@ -52,3 +52,13 @@ output "ec2_security_group_id" {
   value = aws_security_group.ec2_sg.id
   description = "The ID of the private security group for EC2 instances"
 }
+
+output "alb_dns_name" {
+  value = aws_lb.alb.dns_name
+  description = "The DNS name of the Application Load Balancer"
+}
+
+output "alb_target_group_arn" {
+  value = aws_lb_target_group.app_tg.arn
+  description = "The ARN of the Application Load Balancer target group"
+}

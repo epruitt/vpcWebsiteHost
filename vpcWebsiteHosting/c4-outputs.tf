@@ -52,3 +52,13 @@ output "ec2_security_group_id" {
   value = module.vpc.ec2_security_group_id
   description = "The ID of the private security group for EC2 instances"
 }
+
+output "alb_dns_name" {
+  value = module.vpc.alb_dns_name
+  description = "The DNS name of the Application Load Balancer"
+}
+
+output "alb_target_group_arn" {
+  value = module.vpc.alb_target_group_arn
+  description = "The ARN of the Application Load Balancer target group"
+}

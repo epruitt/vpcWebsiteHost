@@ -1,3 +1,4 @@
+# Application Load Balancer (ALB) 
 resource "aws_lb" "app_lb" {
   name               = "${var.environment_name}-app-lb"
   internal           = false
@@ -8,6 +9,7 @@ resource "aws_lb" "app_lb" {
   
 }
 
+# Target Group for the Application Load Balancer
 resource "aws_lb_target_group" "app_tg" {
   name     = "${var.environment_name}-app-tg"
   port     = 80
@@ -25,6 +27,7 @@ resource "aws_lb_target_group" "app_tg" {
   
 }
 
+# Listener for the Application Load Balancer
 resource "aws_lb_listener" "app_listener" {
   load_balancer_arn = aws_lb.app_lb.arn
   port              = 80
