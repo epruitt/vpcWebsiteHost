@@ -36,14 +36,14 @@ resource "aws_instance" "private_ec2" {
               set -e
 
               # Update packages
-              dnf update -y
+              yum update -y
 
               # Install Web Server (nginx)
-              dnf install -y nginx
+              yum install -y nginx
 
               # Install AWS CLI (usually preinstalled, ensuring latest) & Sync S3
-                dnf install -y awscli
-              aws s3 sync s3://var.bucket_name/ /usr/share/nginx/html/
+                yum install -y awscli
+              aws s3 sync s3://${module.vpc.Omnifood_website_bucket_arn}/ /usr/share/nginx/html/
 
               # Enable and Start nginx
 
@@ -51,7 +51,7 @@ resource "aws_instance" "private_ec2" {
               systemctl start nginx
 
               #Install CloudWatch Agent
-              dnf install -y amazon-cloudwatch-agent
+              yum install -y amazon-cloudwatch-agent
                 
               EOF
 
@@ -62,7 +62,7 @@ resource "aws_instance" "private_ec2" {
 }
 
 resource "aws_lb_target_group_attachment" "web_server" {
-  target_group_arn = module.vpc.alb_target_group_arn
+  target_group_arn = module.vpc.web_server_target_group_arn
   target_id        = aws_instance.private_ec2.id
   port             = 80
   

@@ -6,6 +6,5 @@ module "vpc" {
   subnet_newbits        = var.subnet_newbits
   tags                  = var.tags
   ec2_role_name         = var.ec2_role_name
-  bucket_arn            = var.bucket_arn
-  alb_security_group_id = var.alb_security_group_id
+  aws_region            = var.aws_region
 }

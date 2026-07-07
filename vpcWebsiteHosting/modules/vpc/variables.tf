@@ -5,6 +5,13 @@ variable "environment_name" {
   
 }
 
+variable "aws_region" {
+  description = "AWS region to deploy backend"
+  type = string
+  default = "us-east-2"
+  
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type = string
@@ -30,14 +37,4 @@ variable "subnet_newbits" {
 variable "ec2_role_name" {
   description = "Name of the IAM role for EC2 instances"
   type = string
-}
-
-variable "bucket_arn" {
-  description = "ARN of the S3 bucket to grant read-only access to"
-  type        = string
-}
-
-variable "alb_security_group_id" {
-  description = "Security group ID for the Application Load Balancer"
-  type        = string
 }

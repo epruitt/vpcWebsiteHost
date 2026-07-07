@@ -18,18 +18,18 @@ output "private_subnet_map" {
   description = "Map of AZ to Public Subnet ID"
 }
 
-output "Omnifood_website_bucket_name" {
-  value = module.vpc.Omnifood_website_bucket_name
+output "omnifood_website_bucket_name" {
+  value = module.vpc.omnifood_website_bucket_name
   description = "The name of the S3 bucket for Omnifood website assets"
 }
 
-output "Omnifood_website_bucket_arn" {
-  value = module.vpc.Omnifood_website_bucket_arn
+output "omnifood_website_bucket_arn" {
+  value = module.vpc.omnifood_website_bucket_arn
   description = "The ARN of the S3 bucket for Omnifood website assets"
 }
 
-output "Omnifood_website_bucket_domain_name" {
-  value = module.vpc.Omnifood_website_bucket_domain_name
+output "omnifood_website_bucket_domain_name" {
+  value = module.vpc.omnifood_website_bucket_domain_name
   description = "The domain name of the S3 bucket for Omnifood website assets"
 }
 

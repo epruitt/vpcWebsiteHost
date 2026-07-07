@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "assume_role"{
 
 # create IAM role for EC2
 resource "aws_iam_role" "ec2_role"{
-    name = "ec2-role"
+    name = "${var.ec2_role_name}"
     assume_role_policy = data.aws_iam_policy_document.assume_role.json
     tags = var.tags
 }
@@ -31,13 +31,13 @@ resource "aws_iam_role_policy" "s3_access" {
                 Sid    = "ListBucket"
                 Effect = "Allow"
                 Action = ["s3:ListBucket"]
-                Resource = [var.bucket_arn]
+                Resource = [aws_s3_bucket.omnifood_website.arn]
             },
             {
                 Sid    = "GetObjects"
                 Effect = "Allow"
                 Action = ["s3:GetObject"]
-                Resource = ["${var.bucket_arn}/*"]
+                Resource = ["${aws_s3_bucket.omnifood_website.arn}/*"]
             }
         ]
     })

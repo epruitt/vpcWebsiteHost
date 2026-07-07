@@ -18,17 +18,17 @@ output "private_subnet_map" {
   description = "Map of AZ to Public Subnet ID"
 }
 
-output "Omnifood_website_bucket_name" {
+output "omnifood_website_bucket_name" {
   value = aws_s3_bucket.omnifood_website.bucket
   description = "The name of the S3 bucket for Omnifood website assets"
 }
 
-output "Omnifood_website_bucket_arn" {
+output "omnifood_website_bucket_arn" {
   value = aws_s3_bucket.omnifood_website.arn
   description = "The ARN of the S3 bucket for Omnifood website assets"
 }
 
-output "Omnifood_website_bucket_domain_name" {
+output "omnifood_website_bucket_domain_name" {
   value = aws_s3_bucket.omnifood_website.bucket_domain_name
   description = "The domain name of the S3 bucket for Omnifood website assets"
 }
@@ -44,7 +44,7 @@ output "ec2_instance_profile_arn" {
 }
 
 output "alb_security_group_id" {
-  value = var.alb_security_group_id
+  value = aws_security_group.alb_sg.id
   description = "The security group ID for the Application Load Balancer"
 }
 
