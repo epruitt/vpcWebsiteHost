@@ -87,7 +87,7 @@ resource "aws_route_table_association" "private_rt_assoc" {
 
 # ALB Security Group (Public facing)
 resource "aws_security_group" "alb_sg" {
-  name        = "${var.environment_name}-alb-sg"
+  name_prefix       = "${var.environment_name}-alb-sg"
   description = "Security group for the Application Load Balancer"
   vpc_id      = aws_vpc.main.id
 
