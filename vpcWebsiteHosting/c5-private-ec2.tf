@@ -45,7 +45,7 @@ resource "aws_instance" "private_ec2" {
 
              # Install AWS CLI (usually preinstalled, ensuring latest) & Sync S3
               yum install -y awscli
-              aws s3 sync s3://${module.vpc.omnifood_website_bucket_name}/ /usr/share/nginx/html/
+              aws s3 sync s3://"${module.vpc.omnifood_website_bucket_name}"/ /usr/share/nginx/html/
 
               # Enable and Start nginx
 
