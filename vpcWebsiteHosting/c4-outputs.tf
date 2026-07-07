@@ -62,3 +62,8 @@ output "alb_target_group_arn" {
   value = module.vpc.alb_target_group_arn
   description = "The ARN of the Application Load Balancer target group"
 }
+
+output "ec2_instance_profile_name" {
+  value = module.vpc.ec2_instance_profile_name
+  description = "The name of the IAM instance profile for EC2 instances"
+}

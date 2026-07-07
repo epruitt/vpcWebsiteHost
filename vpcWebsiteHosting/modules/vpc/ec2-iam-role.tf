@@ -26,7 +26,6 @@ resource "aws_iam_role_policy" "s3_access" {
 
     policy = jsonencode({
         Version = "2012-10-17"
-        Principal = { Service = "ec2.amazonaws.com" }
         Statement = [
             {
                 Sid    = "ListBucket"

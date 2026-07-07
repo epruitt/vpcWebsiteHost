@@ -46,11 +46,3 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "omnifood_website"
     }
 }
 
-#s3 bucket public access block
-resource "aws_s3_bucket_public_access_block" "omnifood_website_block_public" {
-  bucket = aws_s3_bucket.omnifood_website.id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true  
-}
