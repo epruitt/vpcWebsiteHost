@@ -1,9 +1,9 @@
-console.log("hello world");
+// console.log("hello world");
 
 const myName = "Emanuel Pruitt";
 const h1 = document.querySelector(".heading-primary");
-console.log(myName);
-console.log(h1);
+// console.log(myName);
+// console.log(h1);
 
 // h1.addEventListener("click", function () {
 //   h1.textContent = myName;
@@ -15,7 +15,7 @@ console.log(h1);
 // Set current year
 const yearEl = document.querySelector(".year");
 const currentYear = new Date().getFullYear();
-console.log("currentYear");
+// console.log("currentYear");
 yearEl.textContent = currentYear;
 
 ///////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ function checkFlexGap() {
   document.body.appendChild(flex);
   var isSupported = flex.scrollHeight === 1;
   flex.parentNode.removeChild(flex);
-  console.log(isSupported);
+  // console.log(isSupported);
 
   if (!isSupported) document.body.classList.add("no-flexbox-gap");
 }
