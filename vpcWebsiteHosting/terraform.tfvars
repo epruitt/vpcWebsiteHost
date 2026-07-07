@@ -8,6 +8,9 @@ vpc_cidr = "10.1.0.0/16"
 # Subnet mask (/24 subnets)
 subnet_newbits = 8
 
+# IAM Role for EC2
+ec2_role_name = "${var.ec2_role_name}"
+
 # Tags 
 tags = {
   Terraform   = "true"
