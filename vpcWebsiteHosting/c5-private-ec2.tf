@@ -54,6 +54,17 @@ resource "aws_instance" "private_ec2" {
 
               #Install CloudWatch Agent
               yum install -y amazon-cloudwatch-agent
+
+              #Fetch config from SSM and Start the Agent
+              # The -s flag starts the agent immediately after fetching config
+              /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+                -a fetch-config \
+                -m ec2 \
+                -c ssm:${module.monitoring.ssm_parameter_name} \
+                -s
+
+              # 3. Verify status (optional, checks logs)
+              /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
                 
               EOF
 
