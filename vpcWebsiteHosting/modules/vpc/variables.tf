@@ -38,3 +38,8 @@ variable "ec2_role_name" {
   description = "Name of the IAM role for EC2 instances"
   type = string
 }
+
+variable "alert_email" {
+  description = "Email address for CloudWatch alarm notifications (SNS subscription)"
+  type        = string
+}

@@ -7,4 +7,5 @@ module "vpc" {
   tags                  = var.tags
   ec2_role_name         = var.ec2_role_name
   aws_region            = var.aws_region
+  alert_email           = var.alert_email
 }
