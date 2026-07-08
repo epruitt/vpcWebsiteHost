@@ -18,22 +18,22 @@ data "aws_ami" "latest_amazon_linux" {
     values = ["ebs"]
   }
 
- filter {
+  filter {
     name   = "architecture"
     values = ["x86_64"]
-  } 
+  }
 }
 
 resource "aws_instance" "private_ec2" {
-  ami           = data.aws_ami.latest_amazon_linux.id
-  instance_type = "t2.micro"
-  subnet_id     = element(module.vpc.private_subnet_ids, 0)
+  ami                    = data.aws_ami.latest_amazon_linux.id
+  instance_type          = "t2.micro"
+  subnet_id              = element(module.vpc.private_subnet_ids, 0)
   vpc_security_group_ids = [module.vpc.ec2_security_group_id]
   iam_instance_profile   = module.vpc.ec2_instance_profile_name
 
   depends_on = [module.vpc]
 
-    user_data = <<-EOF
+  user_data = <<-EOF
              #!/bin/bash
               set -e
 
@@ -78,5 +78,5 @@ resource "aws_lb_target_group_attachment" "web_server" {
   target_group_arn = module.vpc.alb_target_group_arn
   target_id        = aws_instance.private_ec2.id
   port             = 80
-  
+
 }

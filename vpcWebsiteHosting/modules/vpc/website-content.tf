@@ -1,16 +1,16 @@
 # MIME types for common web assets
 locals {
   content_types = {
-    ".html"         = "text/html"
-    ".css"          = "text/css"
-    ".js"           = "application/javascript"
-    ".png"          = "image/png"
-    ".jpg"          = "image/jpeg"
-    ".jpeg"         = "image/jpeg"
-    ".svg"          = "image/svg+xml"
-    ".json"         = "application/json"
-    ".webmanifest"  = "application/manifest+json"
-    ".ico"          = "image/x-icon"
+    ".html"        = "text/html"
+    ".css"         = "text/css"
+    ".js"          = "application/javascript"
+    ".png"         = "image/png"
+    ".jpg"         = "image/jpeg"
+    ".jpeg"        = "image/jpeg"
+    ".svg"         = "image/svg+xml"
+    ".json"        = "application/json"
+    ".webmanifest" = "application/manifest+json"
+    ".ico"         = "image/x-icon"
   }
 
   # Get all files recursively from the website folder

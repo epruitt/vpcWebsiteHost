@@ -5,8 +5,8 @@ resource "aws_lb" "app_lb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
   subnets            = values(aws_subnet.public)[*].id
-  tags               = merge(var.tags, {Name = "${var.environment_name}-app-lb"})
-  
+  tags               = merge(var.tags, { Name = "${var.environment_name}-app-lb" })
+
 }
 
 # Target Group for the Application Load Balancer
@@ -23,8 +23,8 @@ resource "aws_lb_target_group" "app_tg" {
     unhealthy_threshold = 2
     matcher             = "200"
   }
-  tags = merge(var.tags, {Name = "${var.environment_name}-app-tg"})
-  
+  tags = merge(var.tags, { Name = "${var.environment_name}-app-tg" })
+
 }
 
 # Listener for the Application Load Balancer
@@ -37,6 +37,6 @@ resource "aws_lb_listener" "app_listener" {
     target_group_arn = aws_lb_target_group.app_tg.arn
   }
 
- 
+
 }
 
