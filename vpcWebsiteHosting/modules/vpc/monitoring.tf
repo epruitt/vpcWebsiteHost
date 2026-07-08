@@ -103,3 +103,169 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
     TargetGroup  = var.target_group_arn_suffix # Pass target_group_arn_suffix
   }
 }
+
+#Cloudwatch Dashboard for EC2 and ALB Monitoring
+resource "aws_cloudwatch_dashboard" "omnifood_main" {
+  dashboard_name = "omnifood-main-dashboard"
+
+  dashboard_body = jsonencode({
+    widgets = [
+      # --- Header ---
+      {
+        type = "text"
+        x    = 0
+        y    = 0
+        width = 24
+        height = 1
+        properties = {
+          markdown = "# Omnifood Infrastructure Overview\nReal-time monitoring using **Free Standard Metrics** (No Agent Required)"
+        }
+      },
+
+      # Alarm Status Widget (At-a-glance health)
+      {
+        type = "alarm"
+        x    = 0
+        y    = 1
+        width = 24
+        height = 2
+        properties = {
+          title = "Current Alarm Status"
+          alarms = [
+            aws_cloudwatch_metric_alarm.ec2_status_check.arn,
+            aws_cloudwatch_metric_alarm.ec2_high_cpu.arn,
+            aws_cloudwatch_metric_alarm.alb_unhealthy_hosts.arn,
+            aws_cloudwatch_metric_alarm.alb_target_5xx.arn
+          ]
+        }
+      },
+
+      # Widget 1: EC2 Health (Free Metrics)
+      {
+        type = "metric"
+        x    = 0
+        y    = 3
+        width = 12
+        height = 6
+        properties = {
+          title = "EC2 Health: CPU & Status Checks"
+          metrics = [
+            ["AWS/EC2", "CPUUtilization", "InstanceId", var.instance_id, { stat = "Average", label = "CPU %" }],
+            ["AWS/EC2", "StatusCheckFailed", "InstanceId", var.instance_id, { stat = "Maximum", label = "Status Failures", color = "#d62728" }]
+          ]
+          period = 60
+          stat   = "Average"
+          region = data.aws_region.current.name
+          view   = "timeSeries"
+          yAxis = {
+            left = {
+              min = 0
+              max = 100
+              label = "Percent"
+            }
+          }
+        }
+      },
+
+      # Widget 2: Network & Disk I/O (Free Metrics Replacement)
+      {
+        type = "metric"
+        x    = 12
+        y    = 3
+        width = 12
+        height = 6
+        properties = {
+          title = "EC2 I/O: Network & Disk Operations"
+          metrics = [
+            ["AWS/EC2", "NetworkIn", "InstanceId", var.instance_id, { stat = "Average", label = "Net In (Bytes)", color = "#1f77b4" }],
+            ["AWS/EC2", "NetworkOut", "InstanceId", var.instance_id, { stat = "Average", label = "Net Out (Bytes)", color = "#2ca02c" }],
+            ["AWS/EC2", "DiskReadOps", "InstanceId", var.instance_id, { stat = "Average", label = "Disk Read Ops", color = "#ff7f0e" }],
+            ["AWS/EC2", "DiskWriteOps", "InstanceId", var.instance_id, { stat = "Average", label = "Disk Write Ops", color = "#d62728" }]
+          ]
+          period = 60
+          stat   = "Average"
+          region = data.aws_region.current.name
+          view   = "timeSeries"
+        }
+      },
+
+      # Section Header: Load Balancer
+      {
+        type = "text"
+        x    = 0
+        y    = 9
+        width = 24
+        height = 1
+        properties = {
+          markdown = "### Application Load Balancer Performance"
+        }
+      },
+
+      # Widget 3: ALB Traffic
+      {
+        type = "metric"
+        x    = 0
+        y    = 10
+        width = 12
+        height = 6
+        properties = {
+          title = "ALB Traffic: Requests & Latency"
+          metrics = [
+            ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", var.alb_arn_suffix, { stat = "Sum", label = "Requests" }],
+            ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", var.alb_arn_suffix, { stat = "Average", label = "Avg Latency (s)" }]
+          ]
+          period = 60
+          stat   = "Sum"
+          region = data.aws_region.current.name
+          view   = "timeSeries"
+        }
+      },
+
+      # Widget 4: ALB Health
+      {
+        type = "metric"
+        x    = 12
+        y    = 10
+        width = 12
+        height = 6
+        properties = {
+          title = "ALB Health: Host Count"
+          metrics = [
+            ["AWS/ApplicationELB", "HealthyHostCount", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix, { stat = "Average", label = "Healthy" }],
+            ["AWS/ApplicationELB", "UnHealthyHostCount", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix, { stat = "Maximum", label = "Unhealthy", color = "#d62728" }]
+          ]
+          period = 60
+          stat   = "Average"
+          region = data.aws_region.current.name
+          view   = "timeSeries"
+          yAxis = {
+            left = {
+              min = 0
+              label = "Hosts"
+            }
+          }
+        }
+      },
+
+      # Widget 5: Errors 
+      {
+        type = "metric"
+        x    = 0
+        y    = 16
+        width = 24
+        height = 6
+        properties = {
+          title = "Error Rates: Target & ELB 5xx"
+          metrics = [
+            ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", var.alb_arn_suffix, { stat = "Sum", label = "Target 5xx" }],
+            ["AWS/ApplicationELB", "HTTPCode_ELB_5XX_Count", "LoadBalancer", var.alb_arn_suffix, { stat = "Sum", label = "ELB 5xx", color = "#ff7f0e" }]
+          ]
+          period = 60
+          stat   = "Sum"
+          region = data.aws_region.current.name
+          view   = "timeSeries"
+        }
+      }
+    ]
+  })
+}   
