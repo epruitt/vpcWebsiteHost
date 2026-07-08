@@ -75,3 +75,8 @@ output "instance_profile_name" {
 output "ssm_parameter_name" {
   value = aws_ssm_parameter.cloudwatch_agent_config.name
 }
+
+output "sns_topic_arn" {
+  value = aws_sns_topic.cloudwatch_alarms_topic.arn
+  description = "The ARN of the SNS topic for CloudWatch alarms"
+}
