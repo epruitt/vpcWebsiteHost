@@ -37,6 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_status_check" {
   threshold           = 0
   alarm_actions       = [aws_sns_topic.cloudwatch_alarms_topic.arn]
   ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  tags                = var.tags
 
   dimensions = {
     InstanceId = module.vpc.instance_id # Pass this variable from root/module caller
@@ -57,6 +58,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_cpu" {
   threshold           = 80
   alarm_actions       = [aws_sns_topic.cloudwatch_alarms_topic.arn]
   ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  tags                = var.tags
 
   dimensions = {
     InstanceId = module.vpc.instance_id
@@ -78,6 +80,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_memory" {
   threshold           = 90
   alarm_actions       = [aws_sns_topic.cloudwatch_alarms_topic.arn]
   ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  tags                = var.tags
 
   # Treat missing data as breaching to catch agent failures
   treat_missing_data = "breaching"
@@ -101,6 +104,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
   threshold           = 0
   alarm_actions       = [aws_sns_topic.cloudwatch_alarms_topic.arn]
   ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  tags                = var.tags
 
   dimensions = {
     LoadBalancer = module.vpc.alb_arn_suffix          # Pass alb_arn_suffix (e.g., "app/my-alb/12345")
