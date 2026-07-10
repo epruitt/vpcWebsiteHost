@@ -73,10 +73,20 @@ output "instance_profile_name" {
 }
 
 output "ssm_parameter_name" {
-  value = aws_ssm_parameter.cloudwatch_agent_config.name
+  value = module.vpc.ssm_parameter_name
 }
 
 output "sns_topic_arn" {
   value       = aws_sns_topic.cloudwatch_alarms_topic.arn
   description = "The ARN of the SNS topic for CloudWatch alarms"
+}
+
+output "alb_arn_suffix" {
+  value       = aws_lb.app_lb.arn_suffix
+  description = "The ARN suffix of the Application Load Balancer"
+}
+
+output "target_group_arn_suffix" {
+  value       = aws_lb_target_group.app_tg.arn_suffix
+  description = "The ARN suffix of the Application Load Balancer target group"
 }

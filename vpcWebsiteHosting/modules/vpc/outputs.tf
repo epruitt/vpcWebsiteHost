@@ -75,3 +75,13 @@ output "instance_profile_name" {
 output "ssm_parameter_name" {
   value = aws_ssm_parameter.cloudwatch_agent_config.name
 }
+
+output "alb_arn_suffix" {
+  value       = aws_lb.app_lb.arn_suffix
+  description = "The ARN suffix of the Application Load Balancer"
+}
+
+output "target_group_arn_suffix" {
+  value       = aws_lb_target_group.app_tg.arn_suffix
+  description = "The ARN suffix of the Application Load Balancer target group"
+}

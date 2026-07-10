@@ -1,3 +1,7 @@
+data "aws_region" "current" {
+  # Fetch the current AWS region for use in CloudWatch dashboard widgets
+}
+
 # Store the Agent Config in SSM Parameter Store
 resource "aws_ssm_parameter" "cloudwatch_agent_config" {
   name        = "/amazoncloudwatch-agent/ec2-config"
@@ -31,11 +35,11 @@ resource "aws_cloudwatch_metric_alarm" "ec2_status_check" {
   period              = 60
   statistic           = "Maximum"
   threshold           = 0
-  alarm_actions       = [aws_sns_topic.omnifood_alerts.arn]
-  ok_actions          = [aws_sns_topic.omnifood_alerts.arn]
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
 
   dimensions = {
-    InstanceId = var.instance_id # Pass this variable from root/module caller
+    InstanceId = module.vpc.instance_id # Pass this variable from root/module caller
   }
 }
 
@@ -55,7 +59,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_cpu" {
   ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
 
   dimensions = {
-    InstanceId = var.instance_id
+    InstanceId = module.vpc.instance_id
   }
 }
 
@@ -79,7 +83,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_memory" {
   treat_missing_data = "breaching"
 
   dimensions = {
-    InstanceId = var.instance_id
+    InstanceId = module.vpc.instance_id
   }
 }
 
@@ -95,12 +99,12 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
   period              = 60
   statistic           = "Maximum"
   threshold           = 0
-  alarm_actions       = [aws_sns_topic.omnifood_alerts.arn]
-  ok_actions          = [aws_sns_topic.omnifood_alerts.arn]
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
 
   dimensions = {
-    LoadBalancer = var.alb_arn_suffix          # Pass alb_arn_suffix (e.g., "app/my-alb/12345")
-    TargetGroup  = var.target_group_arn_suffix # Pass target_group_arn_suffix
+    LoadBalancer = module.vpc.alb_arn_suffix          # Pass alb_arn_suffix (e.g., "app/my-alb/12345")
+    TargetGroup  = module.vpc.target_group_arn_suffix # Pass target_group_arn_suffix
   }
 }
 
@@ -118,7 +122,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         width = 24
         height = 1
         properties = {
-          markdown = "# Omnifood Infrastructure Overview\nReal-time monitoring using **Free Standard Metrics** (No Agent Required)"
+          markdown = "# Omnifood Infrastructure Overview\nReal-time monitoring using **Free Standard Metrics**"
         }
       },
 
@@ -150,8 +154,8 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         properties = {
           title = "EC2 Health: CPU & Status Checks"
           metrics = [
-            ["AWS/EC2", "CPUUtilization", "InstanceId", var.instance_id, { stat = "Average", label = "CPU %" }],
-            ["AWS/EC2", "StatusCheckFailed", "InstanceId", var.instance_id, { stat = "Maximum", label = "Status Failures", color = "#d62728" }]
+            ["AWS/EC2", "CPUUtilization", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "CPU %" }],
+            ["AWS/EC2", "StatusCheckFailed", "InstanceId", module.vpc.instance_id, { stat = "Maximum", label = "Status Failures", color = "#d62728" }]
           ]
           period = 60
           stat   = "Average"
@@ -177,10 +181,10 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         properties = {
           title = "EC2 I/O: Network & Disk Operations"
           metrics = [
-            ["AWS/EC2", "NetworkIn", "InstanceId", var.instance_id, { stat = "Average", label = "Net In (Bytes)", color = "#1f77b4" }],
-            ["AWS/EC2", "NetworkOut", "InstanceId", var.instance_id, { stat = "Average", label = "Net Out (Bytes)", color = "#2ca02c" }],
-            ["AWS/EC2", "DiskReadOps", "InstanceId", var.instance_id, { stat = "Average", label = "Disk Read Ops", color = "#ff7f0e" }],
-            ["AWS/EC2", "DiskWriteOps", "InstanceId", var.instance_id, { stat = "Average", label = "Disk Write Ops", color = "#d62728" }]
+            ["AWS/EC2", "NetworkIn", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "Net In (Bytes)", color = "#1f77b4" }],
+            ["AWS/EC2", "NetworkOut", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "Net Out (Bytes)", color = "#2ca02c" }],
+            ["AWS/EC2", "DiskReadOps", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "Disk Read Ops", color = "#ff7f0e" }],
+            ["AWS/EC2", "DiskWriteOps", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "Disk Write Ops", color = "#d62728" }]
           ]
           period = 60
           stat   = "Average"
@@ -211,8 +215,8 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         properties = {
           title = "ALB Traffic: Requests & Latency"
           metrics = [
-            ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", var.alb_arn_suffix, { stat = "Sum", label = "Requests" }],
-            ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", var.alb_arn_suffix, { stat = "Average", label = "Avg Latency (s)" }]
+            ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", module.vpc.alb_arn_suffix, { stat = "Sum", label = "Requests" }],
+            ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", module.vpc.alb_arn_suffix, { stat = "Average", label = "Avg Latency (s)" }]
           ]
           period = 60
           stat   = "Sum"
@@ -231,8 +235,8 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         properties = {
           title = "ALB Health: Host Count"
           metrics = [
-            ["AWS/ApplicationELB", "HealthyHostCount", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix, { stat = "Average", label = "Healthy" }],
-            ["AWS/ApplicationELB", "UnHealthyHostCount", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix, { stat = "Maximum", label = "Unhealthy", color = "#d62728" }]
+            ["AWS/ApplicationELB", "HealthyHostCount", "LoadBalancer", module.vpc.alb_arn_suffix, "TargetGroup", module.vpc.target_group_arn_suffix, { stat = "Average", label = "Healthy" }],
+            ["AWS/ApplicationELB", "UnHealthyHostCount", "LoadBalancer", module.vpc.alb_arn_suffix, "TargetGroup", module.vpc.target_group_arn_suffix, { stat = "Maximum", label = "Unhealthy", color = "#d62728" }]
           ]
           period = 60
           stat   = "Average"
@@ -257,8 +261,8 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         properties = {
           title = "Error Rates: Target & ELB 5xx"
           metrics = [
-            ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", var.alb_arn_suffix, { stat = "Sum", label = "Target 5xx" }],
-            ["AWS/ApplicationELB", "HTTPCode_ELB_5XX_Count", "LoadBalancer", var.alb_arn_suffix, { stat = "Sum", label = "ELB 5xx", color = "#ff7f0e" }]
+            ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", module.vpc.alb_arn_suffix, { stat = "Sum", label = "Target 5xx" }],
+            ["AWS/ApplicationELB", "HTTPCode_ELB_5XX_Count", "LoadBalancer", module.vpc.alb_arn_suffix, { stat = "Sum", label = "ELB 5xx", color = "#ff7f0e" }]
           ]
           period = 60
           stat   = "Sum"
