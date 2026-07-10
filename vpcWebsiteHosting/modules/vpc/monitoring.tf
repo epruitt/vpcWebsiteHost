@@ -19,7 +19,7 @@ resource "aws_sns_topic_subscription" "email_subscription" {
   endpoint  = var.alert_email
 }
 
-# EC2 Status Check Failed (Free, No Agent Required)
+# EC2 Status Check Failed 
 # Triggers if either system or instance status checks fail for 2 consecutive minutes
 resource "aws_cloudwatch_metric_alarm" "ec2_status_check" {
   alarm_name          = "omnifood-ec2-status-check"
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_status_check" {
   }
 }
 
-# High CPU Utilization (Free, No Agent Required)
+# High CPU Utilization 
 # Triggers if CPU > 80% for 3 consecutive 5-minute periods
 resource "aws_cloudwatch_metric_alarm" "ec2_high_cpu" {
   alarm_name          = "omnifood-ec2-high-cpu"
@@ -59,7 +59,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_cpu" {
   }
 }
 
-# High Memory Utilization (Custom, Requires Agent)
+# High Memory Utilization
 # Triggers if mem_used_percent > 90% for 2 consecutive 1-minute periods
 # Validates that the CloudWatch Agent is running and sending data to 'CWAgent' namespace
 resource "aws_cloudwatch_metric_alarm" "ec2_high_memory" {
@@ -83,7 +83,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_memory" {
   }
 }
 
-# ALB Unhealthy Host Count (Critical "Site Down" Signal)
+# ALB Unhealthy Host Count
 # Triggers immediately if ANY target in the group is unhealthy
 resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
   alarm_name          = "omnifood-alb-unhealthy-hosts"
@@ -122,7 +122,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         }
       },
 
-      # Alarm Status Widget (At-a-glance health)
+      # Alarm Status Widget
       {
         type = "alarm"
         x    = 0
@@ -140,7 +140,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         }
       },
 
-      # Widget 1: EC2 Health (Free Metrics)
+      # Widget 1: EC2 Health
       {
         type = "metric"
         x    = 0
@@ -167,7 +167,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         }
       },
 
-      # Widget 2: Network & Disk I/O (Free Metrics Replacement)
+      # Widget 2: Network & Disk I/O
       {
         type = "metric"
         x    = 12
