@@ -60,7 +60,7 @@ resource "aws_instance" "private_ec2" {
               /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
                 -a fetch-config \
                 -m ec2 \
-                -c ssm:${output.ssm_parameter_name} \
+                -c ssm:${aws_ssm_parameter.cloudwatch_agent_config.name} \
                 -s
 
               # 3. Verify status (optional, checks logs)

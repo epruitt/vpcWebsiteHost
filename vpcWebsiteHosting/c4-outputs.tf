@@ -68,10 +68,6 @@ output "ec2_instance_profile_name" {
   description = "The name of the IAM instance profile for EC2 instances"
 }
 
-output "instance_profile_name" {
-  value = aws_iam_instance_profile.cloudwatch_agent_profile.name
-}
-
 output "ssm_parameter_name" {
   value = aws_ssm_parameter.cloudwatch_agent_config.name
 }
@@ -89,12 +85,4 @@ output "alb_arn_suffix" {
 output "target_group_arn_suffix" {
   value       = module.vpc.target_group_arn_suffix
   description = "The ARN suffix of the Application Load Balancer target group"
-}
-
-output "cloudwatch_agent_profile" {
-  value = module.vpc.iam_instance_profile_name
-}
-
-output "cloudwatch_config_param" {
-  value = module.vpc.ssm_parameter_name
 }

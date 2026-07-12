@@ -4,7 +4,7 @@ data "aws_region" "current" {
 
 # Store the Agent Config in SSM Parameter Store
 resource "aws_ssm_parameter" "cloudwatch_agent_config" {
-  name        = "/amazoncloudwatch-agent/ec2-config"
+  name        = "/amazoncloudwatch-agent/AmazonCloudWatch-ec2-config"
   type        = "String"
   value       = file("${path.module}/agent-config.json")
   description = "CloudWatch Agent configuration for EC2 instances"
@@ -12,7 +12,7 @@ resource "aws_ssm_parameter" "cloudwatch_agent_config" {
 
 # SNS Topic for CloudWatch Alarms
 resource "aws_sns_topic" "cloudwatch_alarms_topic" {
-  name = "cloudwatch-alarms-topic"
+  name = "cloudwatch-alarms-topic-${var.environment_name}"
   tags = var.tags
 }
 
@@ -90,6 +90,34 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_memory" {
   }
 }
 
+#disk utilization
+#triggers if disk_used_percent > 90% for 2 consecutive 1-minute periods
+#validates that the CloudWatch Agent is running and sending data to 'CWAgent' namespace
+resource "aws_cloudwatch_metric_alarm" "ec2_high_disk" {
+  alarm_name          = "ec2-high-disk"
+  alarm_description   = "EC2 Disk utilization exceeds 90% (Agent validation)"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "disk_used_percent"
+  namespace           = "CWAgent"
+  period              = 60
+  statistic           = "Average"
+  threshold           = 90
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  tags                = var.tags
+
+  # Treat missing data as breaching to catch agent failures
+  treat_missing_data = "breaching"
+
+  dimensions = {
+    InstanceId = aws_instance.private_ec2.id
+    path       = "/"
+    fstype     = "xfs"
+  }
+  
+}
+
 # ALB Unhealthy Host Count
 # Triggers immediately if ANY target in the group is unhealthy
 resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
@@ -114,7 +142,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
 
 #Cloudwatch Dashboard for EC2 and ALB Monitoring
 resource "aws_cloudwatch_dashboard" "omnifood_main" {
-  dashboard_name = "main-dashboard"
+  dashboard_name = "Omnifood-Main-Dashboard-${var.environment_name}"
 
   dashboard_body = jsonencode({
     widgets = [
@@ -158,7 +186,8 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           title = "EC2 Health: CPU & Status Checks"
           metrics = [
             ["AWS/EC2", "CPUUtilization", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "CPU %" }],
-            ["AWS/EC2", "StatusCheckFailed", "InstanceId", aws_instance.private_ec2.id, { stat = "Maximum", label = "Status Failures", color = "#d62728" }]
+            ["AWS/EC2", "StatusCheckFailed", "InstanceId", aws_instance.private_ec2.id, { stat = "Maximum", label = "Status Failures", color = "#d62728" }],
+            ["AWS/EC2", "DiskUtilization", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "Disk Utilization" }],
           ]
           period = 60
           stat   = "Average"
