@@ -85,3 +85,13 @@ output "target_group_arn_suffix" {
   value       = aws_lb_target_group.app_tg.arn_suffix
   description = "The ARN suffix of the Application Load Balancer target group"
 }
+
+output "iam_instance_profile_name" {
+  description = "The name of the IAM instance profile"
+  value       = aws_iam_instance_profile.ec2_profile.name
+}
+
+output "ssm_parameter_name" {
+  description = "The name of the SSM parameter"
+  value       = aws_ssm_parameter.cloudwatch_agent_config.name
+}   

@@ -29,7 +29,7 @@ resource "aws_instance" "private_ec2" {
   instance_type          = "t2.micro"
   subnet_id              = element(module.vpc.private_subnet_ids, 0)
   vpc_security_group_ids = [module.vpc.ec2_security_group_id]
-  iam_instance_profile   = module.vpc.ec2_instance_profile_name
+  iam_instance_profile   = module.vpc.ec2_instance_profile
 
   depends_on = [module.vpc]
 
@@ -60,7 +60,7 @@ resource "aws_instance" "private_ec2" {
               /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
                 -a fetch-config \
                 -m ec2 \
-                -c ssm:${module.vpc.ssm_parameter_name} \
+                -c ssm:${monitoring.ssm_parameter_name} \
                 -s
 
               # 3. Verify status (optional, checks logs)

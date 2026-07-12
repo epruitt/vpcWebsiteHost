@@ -3,6 +3,10 @@ data "aws_iam_policy_document" "assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     effect  = "Allow"
+     principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
   }
 }
 
@@ -17,6 +21,12 @@ resource "aws_iam_role" "ec2_role" {
 resource "aws_iam_role_policy_attachment" "ec2_ssm_policy" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+#attach AWS managed policy to the role (CloudWatch Agent)
+resource "aws_iam_role_policy_attachment" "cloudwatch" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 #Least Privilage policy for S3 access

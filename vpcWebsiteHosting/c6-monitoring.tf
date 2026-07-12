@@ -26,7 +26,7 @@ resource "aws_sns_topic_subscription" "email_subscription" {
 # EC2 Status Check Failed 
 # Triggers if either system or instance status checks fail for 2 consecutive minutes
 resource "aws_cloudwatch_metric_alarm" "ec2_status_check" {
-  alarm_name          = "omnifood-ec2-status-check"
+  alarm_name          = "ec2-status-check"
   alarm_description   = "EC2 instance failed status check (hardware or network issue)"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
@@ -47,7 +47,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_status_check" {
 # High CPU Utilization 
 # Triggers if CPU > 80% for 3 consecutive 5-minute periods
 resource "aws_cloudwatch_metric_alarm" "ec2_high_cpu" {
-  alarm_name          = "omnifood-ec2-high-cpu"
+  alarm_name          = "ec2-high-cpu"
   alarm_description   = "EC2 CPU utilization exceeds 80%"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 3
@@ -69,7 +69,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_cpu" {
 # Triggers if mem_used_percent > 90% for 2 consecutive 1-minute periods
 # Validates that the CloudWatch Agent is running and sending data to 'CWAgent' namespace
 resource "aws_cloudwatch_metric_alarm" "ec2_high_memory" {
-  alarm_name          = "omnifood-ec2-high-memory"
+  alarm_name          = "ec2-high-memory"
   alarm_description   = "EC2 Memory utilization exceeds 90% (Agent validation)"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
@@ -93,7 +93,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_memory" {
 # ALB Unhealthy Host Count
 # Triggers immediately if ANY target in the group is unhealthy
 resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
-  alarm_name          = "omnifood-alb-unhealthy-hosts"
+  alarm_name          = "alb-unhealthy-hosts"
   alarm_description   = "ALB Target Group has unhealthy hosts"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
@@ -114,7 +114,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
 
 #Cloudwatch Dashboard for EC2 and ALB Monitoring
 resource "aws_cloudwatch_dashboard" "omnifood_main" {
-  dashboard_name = "omnifood-main-dashboard"
+  dashboard_name = "main-dashboard"
 
   dashboard_body = jsonencode({
     widgets = [
@@ -126,7 +126,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         width = 24
         height = 1
         properties = {
-          markdown = "# Omnifood Infrastructure Overview\nReal-time monitoring using **Free Standard Metrics**"
+          markdown = "# Omnifood Infrastructure Overview\nReal-time monitoring using "
         }
       },
 

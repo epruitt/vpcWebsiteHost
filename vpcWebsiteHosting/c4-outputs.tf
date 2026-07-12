@@ -90,3 +90,11 @@ output "target_group_arn_suffix" {
   value       = aws_lb_target_group.app_tg.arn_suffix
   description = "The ARN suffix of the Application Load Balancer target group"
 }
+
+output "cloudwatch_agent_profile" {
+  value = module.vpc.iam_instance_profile_name
+}
+
+output "cloudwatch_config_param" {
+  value = module.vpc.ssm_parameter_name
+}
