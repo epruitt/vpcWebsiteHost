@@ -54,3 +54,8 @@ variable "target_group_arn_suffix" {
   description = "ARN suffix of the target group"
   type        = string
 }
+
+variable "instance_id" {
+  description = "ID of the EC2 instance"
+  type        = string
+}

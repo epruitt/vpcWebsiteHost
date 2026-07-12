@@ -90,8 +90,3 @@ output "iam_instance_profile_name" {
   description = "The name of the IAM instance profile"
   value       = aws_iam_instance_profile.ec2_profile.name
 }
-
-output "ssm_parameter_name" {
-  description = "The name of the SSM parameter"
-  value       = aws_ssm_parameter.cloudwatch_agent_config.name
-}   

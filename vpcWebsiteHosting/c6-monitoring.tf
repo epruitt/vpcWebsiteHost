@@ -6,7 +6,7 @@ data "aws_region" "current" {
 resource "aws_ssm_parameter" "cloudwatch_agent_config" {
   name        = "/amazoncloudwatch-agent/ec2-config"
   type        = "String"
-  value       = file("${path.module}/../../agent-config.json")
+  value       = file("${path.module}/agent-config.json")
   description = "CloudWatch Agent configuration for EC2 instances"
 }
 
@@ -40,7 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_status_check" {
   tags                = var.tags
 
   dimensions = {
-    InstanceId = module.vpc.instance_id # Pass this variable from root/module caller
+    InstanceId = aws_instance.private_ec2.id # Pass this variable from root/module caller
   }
 }
 
@@ -61,7 +61,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_cpu" {
   tags                = var.tags
 
   dimensions = {
-    InstanceId = module.vpc.instance_id
+    InstanceId = aws_instance.private_ec2.id
   }
 }
 
@@ -86,7 +86,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_high_memory" {
   treat_missing_data = "breaching"
 
   dimensions = {
-    InstanceId = module.vpc.instance_id
+    InstanceId = aws_instance.private_ec2.id
   }
 }
 
@@ -142,8 +142,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           alarms = [
             aws_cloudwatch_metric_alarm.ec2_status_check.arn,
             aws_cloudwatch_metric_alarm.ec2_high_cpu.arn,
-            aws_cloudwatch_metric_alarm.alb_unhealthy_hosts.arn,
-            aws_cloudwatch_metric_alarm.alb_target_5xx.arn
+            aws_cloudwatch_metric_alarm.alb_unhealthy_hosts.arn
           ]
         }
       },
@@ -158,8 +157,8 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         properties = {
           title = "EC2 Health: CPU & Status Checks"
           metrics = [
-            ["AWS/EC2", "CPUUtilization", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "CPU %" }],
-            ["AWS/EC2", "StatusCheckFailed", "InstanceId", module.vpc.instance_id, { stat = "Maximum", label = "Status Failures", color = "#d62728" }]
+            ["AWS/EC2", "CPUUtilization", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "CPU %" }],
+            ["AWS/EC2", "StatusCheckFailed", "InstanceId", aws_instance.private_ec2.id, { stat = "Maximum", label = "Status Failures", color = "#d62728" }]
           ]
           period = 60
           stat   = "Average"
@@ -185,10 +184,10 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
         properties = {
           title = "EC2 I/O: Network & Disk Operations"
           metrics = [
-            ["AWS/EC2", "NetworkIn", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "Net In (Bytes)", color = "#1f77b4" }],
-            ["AWS/EC2", "NetworkOut", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "Net Out (Bytes)", color = "#2ca02c" }],
-            ["AWS/EC2", "DiskReadOps", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "Disk Read Ops", color = "#ff7f0e" }],
-            ["AWS/EC2", "DiskWriteOps", "InstanceId", module.vpc.instance_id, { stat = "Average", label = "Disk Write Ops", color = "#d62728" }]
+            ["AWS/EC2", "NetworkIn", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "Net In (Bytes)", color = "#1f77b4" }],
+            ["AWS/EC2", "NetworkOut", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "Net Out (Bytes)", color = "#2ca02c" }],
+            ["AWS/EC2", "DiskReadOps", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "Disk Read Ops", color = "#ff7f0e" }],
+            ["AWS/EC2", "DiskWriteOps", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "Disk Write Ops", color = "#d62728" }]
           ]
           period = 60
           stat   = "Average"
