@@ -43,4 +43,5 @@ variable "ec2_role_name" {
 variable "alert_email" {
   description = "Email address for CloudWatch alarm notifications (SNS subscription)"
   type        = string
+  sensitive   = true
 }

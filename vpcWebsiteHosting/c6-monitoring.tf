@@ -4,7 +4,7 @@ data "aws_region" "current" {
 
 # Store the Agent Config in SSM Parameter Store
 resource "aws_ssm_parameter" "cloudwatch_agent_config" {
-  name        = "/amazoncloudwatch-agent/AmazonCloudWatch-ec2-config"
+  name        = "AmazonCloudWatch-ec2-config"
   type        = "String"
   value       = file("${path.module}/agent-config.json")
   description = "CloudWatch Agent configuration for EC2 instances"
@@ -170,7 +170,9 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           alarms = [
             aws_cloudwatch_metric_alarm.ec2_status_check.arn,
             aws_cloudwatch_metric_alarm.ec2_high_cpu.arn,
-            aws_cloudwatch_metric_alarm.alb_unhealthy_hosts.arn
+            aws_cloudwatch_metric_alarm.alb_unhealthy_hosts.arn,
+            aws_cloudwatch_metric_alarm.ec2_high_memory.arn,
+            aws_cloudwatch_metric_alarm.ec2_high_disk.arn
           ]
         }
       },
