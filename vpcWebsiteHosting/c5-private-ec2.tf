@@ -29,7 +29,7 @@ resource "aws_instance" "private_ec2" {
   instance_type          = "t2.micro"
   subnet_id              = element(module.vpc.private_subnet_ids, 0)
   vpc_security_group_ids = [module.vpc.ec2_security_group_id]
-  iam_instance_profile   = module.vpc.ec2_instance_profile
+  iam_instance_profile = module.vpc.iam_instance_profile_name
 
   depends_on = [module.vpc]
 
