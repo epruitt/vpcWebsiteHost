@@ -187,7 +187,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           metrics = [
             ["AWS/EC2", "CPUUtilization", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "CPU %" }],
             ["AWS/EC2", "StatusCheckFailed", "InstanceId", aws_instance.private_ec2.id, { stat = "Maximum", label = "Status Failures", color = "#d62728" }],
-            ["AWS/EC2", "DiskUtilization", "InstanceId", aws_instance.private_ec2.id, { stat = "Average", label = "Disk Utilization" }],
+            ["CWAgent", "disk_used_percent", "InstanceId", aws_instance.private_ec2.id, "path", "/", "fstype", "xfs", { stat = "Average", label = "Disk Usage %" }],
           ]
           period = 60
           stat   = "Average"
