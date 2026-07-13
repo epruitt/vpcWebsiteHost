@@ -191,7 +191,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           ]
           period = 60
           stat   = "Average"
-          region = data.aws_region.current.name
+          region = data.aws_region.current.region
           view   = "timeSeries"
           yAxis = {
             left = {
@@ -220,7 +220,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           ]
           period = 60
           stat   = "Average"
-          region = data.aws_region.current.name
+          region = data.aws_region.current.region
           view   = "timeSeries"
         }
       },
@@ -252,7 +252,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           ]
           period = 60
           stat   = "Sum"
-          region = data.aws_region.current.name
+          region = data.aws_region.current.region
           view   = "timeSeries"
         }
       },
@@ -272,7 +272,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           ]
           period = 60
           stat   = "Average"
-          region = data.aws_region.current.name
+          region = data.aws_region.current.region
           view   = "timeSeries"
           yAxis = {
             left = {
@@ -298,7 +298,7 @@ resource "aws_cloudwatch_dashboard" "omnifood_main" {
           ]
           period = 60
           stat   = "Sum"
-          region = data.aws_region.current.name
+          region = data.aws_region.current.region
           view   = "timeSeries"
         }
       }
