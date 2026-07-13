@@ -44,18 +44,3 @@ variable "alert_email" {
   description = "Email address for CloudWatch alarm notifications (SNS subscription)"
   type        = string
 }
-
-variable "alb_arn_suffix" {
-  description = "ARN suffix of the ALB"
-  type        = string
-}
-
-variable "target_group_arn_suffix" {
-  description = "ARN suffix of the target group"
-  type        = string
-}
-
-variable "instance_id" {
-  description = "ID of the EC2 instance"
-  type        = string
-}
