@@ -86,3 +86,8 @@ output "target_group_arn_suffix" {
   value       = module.vpc.target_group_arn_suffix
   description = "The ARN suffix of the Application Load Balancer target group"
 }
+
+output "instance_id" {
+  description = "The ID of the EC2 instance"
+  value       = aws_instance.private_ec2.id
+}

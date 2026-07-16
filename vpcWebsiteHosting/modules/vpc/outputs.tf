@@ -78,7 +78,3 @@ output "iam_instance_profile_name" {
   value = aws_iam_instance_profile.ec2_instance_profile.name
 }
 
-output "instance_id" {
-  description = "The ID of the EC2 instance"
-  value       = aws_instance.private_ec2.id
-}
