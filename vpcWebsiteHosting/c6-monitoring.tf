@@ -140,6 +140,28 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
   }
 }
 
+# ALB 5xx Error Count
+# Triggers if 5xx errors exceed threshold for 2 consecutive 1-minute periods
+resource "aws_cloudwatch_metric_alarm" "alb_5xx_errors" {
+  alarm_name          = "alb-5xx-errors"
+  alarm_description   = "ALB 5xx error count exceeds threshold"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "HTTPCode_ELB_5XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = 60
+  statistic           = "Sum"
+  threshold           = 10
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
+  tags                = var.tags
+
+  dimensions = {
+    LoadBalancer = module.vpc.alb_arn_suffix
+  }
+  
+}
+
 #Cloudwatch Dashboard for EC2 and ALB Monitoring
 resource "aws_cloudwatch_dashboard" "omnifood_main" {
   dashboard_name = "Omnifood-Main-Dashboard-${var.environment_name}"
